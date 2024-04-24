@@ -1,11 +1,12 @@
 <?php
 session_start();
-require_once '../includes/config.php';  // Assurez-vous que le chemin est correct.
+require_once '../includes/config.php';
 
 // GESTION CONTACT ET CONFIDENTIALITE  //
 // Récupérer les paramètres
 $stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
 
 ?>
 
@@ -15,6 +16,7 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RareRythm - Accueil</title>
+    <link href="public/css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -61,7 +63,18 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
             <img src="images/RareRythm logo/logo-transparent.png" alt="Logo RareRythm">
             <h1>Découvrir la musique autrement !</h1>
         </div>
+        <div class="search-container mt-3">
+            <form action="search_results.php" method="get">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Rechercher de la musique..." name="search" required>
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-warning">Rechercher</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+    
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
         <div class="row">

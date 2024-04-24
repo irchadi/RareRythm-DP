@@ -1,0 +1,23 @@
+
+/**/
+
+.search-container {
+    max-width: 600px; 
+    margin: auto;
+}
+
+.search-container .form-control {
+    border: 2px solid #ffc107; 
+}
+
+.search-container .btn-warning {
+    color: #fff; 
+    background-color: #ffc107; 
+    border-color: #ffc107; 
+}
+
+.search-container .btn-warning:hover {
+    color: #212529; 
+    background-color: #e0a800; 
+    border-color: #daa520; 
+}
