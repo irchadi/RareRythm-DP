@@ -7,14 +7,19 @@ require_once '../includes/config.php';  // Assurez-vous que le chemin est correc
 $stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-// GENRES
-try {
-    // Les genres et leurs images
-    $stmt = $pdo->query("SELECT id, nom, image FROM Genres_musicaux");
-    $genres = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Erreur lors de la récupération des genres : " . $e->getMessage();
-    $genres = []; 
+// Récupérer l'ID de l'événement depuis l'URL
+$eventId = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+// Récupérer les détails de l'événement depuis la base de données
+$stmt = $pdo->prepare("SELECT * FROM evenements WHERE id = :id");
+$stmt->bindParam(':id', $eventId, PDO::PARAM_INT);
+$stmt->execute();
+$event = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Rediriger si l'événement n'est pas trouvé
+if (!$event) {
+    header("Location: error.php");  // Rediriger vers une page d'erreur si l'événement n'existe pas
+    exit;
 }
 
 ?>
@@ -24,7 +29,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RareRythm - Accueil</title>
+    <title><?= htmlspecialchars($event['titre']); ?> - RareRythm</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -66,28 +71,16 @@ try {
         </div>
     </nav>
 
-    <!-- Section Genres -->
-    <div class="container genres-container">
-    <h2>Genres</h2>
-    <div class="row">
-        <?php foreach ($genres as $genre): ?>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
-                    <div class="card-body">
-                        <p class="card-text"><?= htmlspecialchars($genre['nom']) ?></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Écouter</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
+    <main>
+    <div class="container mt-4">
+        <h1><?= htmlspecialchars($event['titre']); ?></h1>
+        <img src="images/<?= htmlspecialchars($event['image']) ?>" alt="<?= htmlspecialchars($event['titre']); ?>" class="img-fluid">
+        <p>Date de l'événement : <?= date('d/m/Y', strtotime($event['date'])); ?></p>
+        <p>Lieu : <?= htmlspecialchars($event['lieu']); ?></p>
+        <p>Description : <?= nl2br(htmlspecialchars($event['description'])); ?></p>
+        <!-- Ajouter plus de détails si nécessaire -->
     </div>
-</div>
+    </main>
 
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">

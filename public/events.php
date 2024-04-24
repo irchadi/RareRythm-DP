@@ -7,6 +7,10 @@ require_once '../includes/config.php';  // Assurez-vous que le chemin est correc
 $stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
+// Récupérer les événements
+$stmt = $pdo->query("SELECT * FROM evenements ORDER BY date DESC");
+$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -55,6 +59,26 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
             </ul>
         </div>
     </nav>
+
+    <!-- Section des événements -->
+    <div class="container mt-4">
+        <h2>Événements à venir</h2>
+        <div class="row">
+            <?php foreach ($events as $event): ?>
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="images/<?= htmlspecialchars($event['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($event['titre']) ?>">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($event['titre']) ?></h5>
+                            <p class="card-text"><?= htmlspecialchars($event['description']) ?></p>
+                            <p class="card-text"><small class="text-muted"><?= date('d/m/Y', strtotime($event['date'])) ?></small></p>
+                            <a href="event_detail.php?id=<?= $event['id'] ?>" class="btn btn-primary">En savoir plus</a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
 
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
