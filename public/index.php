@@ -7,6 +7,20 @@ require_once '../includes/config.php';
 $stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
+// Récupération des événements
+$eventsStmt = $pdo->query("SELECT * FROM evenements ORDER BY date DESC LIMIT 4");
+$events = $eventsStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// GENRES
+try {
+    // Les genres et leurs images
+    $stmt = $pdo->query("SELECT id, nom, image FROM Genres_musicaux");
+    $genres = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Erreur lors de la récupération des genres : " . $e->getMessage();
+    $genres = []; 
+}
+
 
 ?>
 
@@ -74,6 +88,47 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
             </form>
         </div>
     </div>
+    <!-- Section Événements -->
+    <div class="container my-4">
+        <h2>En ce moment</h2>
+        <div class="row">
+            <?php foreach ($events as $event): ?>
+                <div class="col-md-3 mb-3">
+                    <div class="card">
+                        <img src="path/to/event/images/<?= htmlspecialchars($event['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($event['titre']) ?>">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($event['titre']) ?></h5>
+                            <p class="card-text"><?= htmlspecialchars($event['description']) ?></p>
+                            <p class="card-text"><small class="text-muted"><?= htmlspecialchars($event['date']) ?></small></p>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+    <!-- Section Genres -->
+    <div class="container genres-container">
+    <h2>Genres</h2>
+    <div class="row">
+        <?php foreach ($genres as $genre): ?>
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
+                    <div class="card-body">
+                        <p class="card-text"><?= htmlspecialchars($genre['nom']) ?></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Écouter</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+</div>
     
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
