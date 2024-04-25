@@ -7,6 +7,11 @@ require_once '../includes/config.php'; // Assurez-vous que le chemin est correct
 $stmt = $pdo->query("SELECT * FROM morceaux_de_musique");
 $morceaux = $stmt->fetchAll();
 
+// Récupérer le morceaux du morceau de musique
+$stmt = $pdo->query("SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom FROM morceaux_de_musique JOIN genres_musicaux ON morceaux_de_musique.genre_id = genres_musicaux.id");
+$morceaux = $stmt->fetchAll();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -66,20 +71,23 @@ $morceaux = $stmt->fetchAll();
         <option value="genre_asc">Genre (A-Z)</option>
         <option value="genre_desc">Genre (Z-A)</option>
     </select>
+   
     
     <!-- Conteneur pour la liste de musiques -->
     <div id="music-list" class="container">
-    <h1>Liste des Musiques</h1>
-    <!-- Injectez ici les morceaux récupérés initialement -->
     <?php foreach ($morceaux as $morceau): ?>
         <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title"><?= htmlspecialchars($morceau['titre']) ?></h5>
+                <!-- Afficher la pastille avec le genre -->
                 <p class="card-text"><?= htmlspecialchars($morceau['description']) ?></p>
                 <audio controls>
                     <source src="musique/<?= htmlspecialchars($morceau['fichier_audio']) ?>" type="audio/mpeg">
                     Votre navigateur ne supporte pas l'élément audio.
                 </audio>
+                <span class="badge bg-secondary genre-badge" data-genre="<?= htmlspecialchars($morceau['genre_nom']) ?>">
+                <?= htmlspecialchars($morceau['genre_nom']) ?></span>
+
             </div>
         </div>
     <?php endforeach; ?>
@@ -108,6 +116,20 @@ document.getElementById('sort').addEventListener('change', function() {
             container.innerHTML += card; // Ajouter la carte au conteneur
         });
     });
+});
+
+document.querySelectorAll('.genre-badge').forEach(badge => {
+  badge.addEventListener('click', function() {
+    const genre = this.getAttribute('data-genre');
+    document.querySelectorAll('.card').forEach(card => {
+      const cardGenre = card.querySelector('.genre-badge').getAttribute('data-genre');
+      if (cardGenre === genre || genre === 'Tous') {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
 });
 </script>
 
