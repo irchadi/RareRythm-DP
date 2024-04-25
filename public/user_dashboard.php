@@ -78,7 +78,7 @@ if ($user) {
                 <a class="nav-link" href="genres.php">Genres</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="favorites.php">Favoris</a>
+                <a class="nav-link" href="musique.php">Musiques</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="events.php">Évènements</a>

@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a class="nav-link" href="#">Genres</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Favoris</a>
+                <a class="nav-link" href="musique.php">Musiques</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Évènements</a>
