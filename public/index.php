@@ -30,7 +30,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RareRythm - Accueil</title>
-    <link href="public/css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -109,20 +109,23 @@ try {
 
     <!-- Section Genres -->
     <div class="container genres-container">
-    <h2>Genres</h2>
-    <div class="row">
-        <?php foreach ($genres as $genre): ?>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
+        <h2>Genres</h2>
+        <div class="row">
+            <?php foreach ($genres as $genre): ?>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <a href="musique.php?genre=<?= $genre['id'] ?>">
+                        <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
+                    </a>
                     <div class="card-body">
                         <p class="card-text"><?= htmlspecialchars($genre['nom']) ?></p>
                     </div>
                 </div>
-            </div>
+        </div>
         <?php endforeach; ?>
     </div>
 </div>
+
     
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">

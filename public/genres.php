@@ -68,23 +68,19 @@ try {
 
     <!-- Section Genres -->
     <div class="container genres-container">
-    <h2>Genres</h2>
-    <div class="row">
-        <?php foreach ($genres as $genre): ?>
-            <div class="col-md-4">
-                <div class="card mb-4 shadow-sm">
-                    <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
+        <h2>Genres</h2>
+        <div class="row">
+            <?php foreach ($genres as $genre): ?>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <a href="musique.php?genre=<?= $genre['id'] ?>">
+                        <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
+                    </a>
                     <div class="card-body">
                         <p class="card-text"><?= htmlspecialchars($genre['nom']) ?></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Écouter</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
-            </div>
+        </div>
         <?php endforeach; ?>
     </div>
 </div>
