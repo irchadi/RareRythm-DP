@@ -2,53 +2,64 @@
 session_start();
 require_once '../includes/config.php'; 
 
-$message = ''; // Pour les messages à l'utilisateur
+// Vérifiez si l'utilisateur est connecté, sinon redirigez-le vers la page de connexion
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit;
+}
 
-// Gestion de la soumission du formulaire
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Extraction des informations du formulaire
+$message = ''; // Pour afficher des messages à l'utilisateur
+
+// Gérer la soumission du formulaire
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['fichier'])) {
     $titre = $_POST['titre'];
     $artiste = $_POST['artiste'];
     $genre = $_POST['genre'];
     $description = $_POST['description'];
+    $file = $_FILES['fichier'];
 
-    // Gérer l'upload du fichier audio
-    if (isset($_FILES['fichier']) && $_FILES['fichier']['error'] === UPLOAD_ERR_OK) {
-        $fileTmpPath = $_FILES['fichier']['tmp_name'];
-        $fileName = $_FILES['fichier']['name'];
-        $fileSize = $_FILES['fichier']['size'];
-        $fileType = $_FILES['fichier']['type'];
-        $fileNameCmps = explode(".", $fileName);
-        $fileExtension = strtolower(end($fileNameCmps));
-        $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
-        $allowedfileExtensions = ['mp3', 'wav', 'ogg'];
-        $uploadFileDir = '../public/musique/';
-        $dest_path = $uploadFileDir . $newFileName;
+    // Chemin du dossier où les fichiers seront sauvegardés
+    $uploadDir = '../public/musique/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
 
-        if (in_array($fileExtension, $allowedfileExtensions)) {
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                // Insertion des informations dans la base de données
-                $query = "INSERT INTO morceaux_de_musique (titre, artiste, genre_id, fichier_audio, description) VALUES (?, ?, ?, ?, ?)";
-                $stmt = $pdo->prepare($query);
-                if ($stmt->execute([$titre, $artiste, $genre, $newFileName, $description])) {
-                    $message = 'Votre musique a été partagée avec succès!';
+    // Gestion du fichier reçu
+    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $valid_extensions = array("mp3", "wav", "ogg");
+    $newFileName = uniqid() . '.' . $fileExtension; // Nom de fichier unique pour éviter les conflits
+    $dest_path = $uploadDir . $newFileName;
+
+    // Vérifiez si le fichier est une extension valide
+    if (in_array($fileExtension, $valid_extensions)) {
+        if ($file['error'] === 0) {
+            if ($file['size'] < 10000000) { // Limite de taille de fichier à 10MB
+                if (move_uploaded_file($file['tmp_name'], $dest_path)) {
+                    // Insertion des données dans la base de données
+                    $stmt = $pdo->prepare("INSERT INTO morceaux_de_musique (titre, artiste, genre_id, fichier_audio, description) VALUES (?, ?, ?, ?, ?)");
+                    if ($stmt->execute([$titre, $artiste, $genre, $newFileName, $description])) {
+                        $message = "Musique partagée avec succès!";
+                    } else {
+                        $message = "Erreur lors de l'enregistrement dans la base de données.";
+                    }
                 } else {
-                    $message = 'Erreur lors de l\'enregistrement dans la base de données.';
+                    $message = "Erreur lors du téléchargement du fichier.";
                 }
             } else {
-                $message = 'Une erreur est survenue lors du déplacement du fichier.';
+                $message = "Le fichier est trop grand.";
             }
         } else {
-            $message = 'Upload non autorisé. Types de fichiers autorisés: ' . implode(',', $allowedfileExtensions);
+            $message = "Erreur lors du téléchargement du fichier.";
         }
     } else {
-        $message = 'Erreur avec l\'upload du fichier. Erreur:' . $_FILES['fichier']['error'];
+        $message = "Type de fichier non autorisé. Seuls les formats mp3, wav, et ogg sont acceptés.";
     }
 }
 
 // Récupérer la liste des genres pour le formulaire
-$stmt = $pdo->query("SELECT id, nom FROM genres_musicaux");
-$genres = $stmt->fetchAll();
+$genreStmt = $pdo->query("SELECT id, nom FROM genres_musicaux");
+$genres = $genreStmt->fetchAll();
+
 
 // GESTION CONTACT ET CONFIDENTIALITE  //
 // Récupérer les paramètres
@@ -137,7 +148,7 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
         </form>
     </div>
     </main>
-    
+
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
         <div class="row">
