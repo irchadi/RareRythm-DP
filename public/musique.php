@@ -56,20 +56,61 @@ $morceaux = $stmt->fetchAll();
         </ul>
     </div>
 </nav>
-    <div class="container">
-        <h1>Liste des Musiques</h1>
-        <?php foreach ($morceaux as $morceau): ?>
-            <div class="card mb-3">
+<div class="container">
+    <h1>Liste des Musiques</h1>
+    
+    <!-- Menu déroulant pour le tri -->
+    <select id="sort" class="form-control mb-3">
+        <option value="date_asc">Plus récents d'abord</option>
+        <option value="date_desc">Plus anciens d'abord</option>
+        <option value="genre_asc">Genre (A-Z)</option>
+        <option value="genre_desc">Genre (Z-A)</option>
+    </select>
+    
+    <!-- Conteneur pour la liste de musiques -->
+    <div id="music-list" class="container">
+    <h1>Liste des Musiques</h1>
+    <!-- Injectez ici les morceaux récupérés initialement -->
+    <?php foreach ($morceaux as $morceau): ?>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><?= htmlspecialchars($morceau['titre']) ?></h5>
+                <p class="card-text"><?= htmlspecialchars($morceau['description']) ?></p>
+                <audio controls>
+                    <source src="musique/<?= htmlspecialchars($morceau['fichier_audio']) ?>" type="audio/mpeg">
+                    Votre navigateur ne supporte pas l'élément audio.
+                </audio>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+</div>
+
+<script>
+document.getElementById('sort').addEventListener('change', function() {
+    fetch('sort_music.php?sort=' + this.value)
+    .then(response => response.json())
+    .then(morceaux => {
+        const container = document.getElementById('music-list');
+        container.innerHTML = ''; // Vider le conteneur
+        morceaux.forEach(morceau => {
+            // Créer la carte pour chaque morceau
+            const card = `<div class="card mb-3">
                 <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($morceau['titre']) ?></h5>
-                    <p class="card-text"><?= htmlspecialchars($morceau['description']) ?></p>
+                    <h5 class="card-title">${morceau.titre}</h5>
+                    <p class="card-text">${morceau.description}</p>
                     <audio controls>
-                        <source src="musique/<?= htmlspecialchars($morceau['fichier_audio']) ?>" type="audio/mpeg">
+                        <source src="musique/${morceau.fichier_audio}" type="audio/mpeg">
                         Votre navigateur ne supporte pas l'élément audio.
                     </audio>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
+            </div>`;
+            container.innerHTML += card; // Ajouter la carte au conteneur
+        });
+    });
+});
+</script>
+
+    
 </body>
 </html>
