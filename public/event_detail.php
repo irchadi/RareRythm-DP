@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../includes/config.php';  // Assurez-vous que le chemin est correct.
+require_once '../includes/config.php';
 
 // GESTION CONTACT ET CONFIDENTIALITE  //
 // Récupérer les paramètres
@@ -18,7 +18,7 @@ $event = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Rediriger si l'événement n'est pas trouvé
 if (!$event) {
-    header("Location: error.php");  // Rediriger vers une page d'erreur si l'événement n'existe pas
+    header("Location: error.php"); // Rediriger vers une page d'erreur si l'événement n'existe pas
     exit;
 }
 
@@ -38,51 +38,47 @@ if (!$event) {
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.php">
+    <a class="navbar-brand" href="index.php">
         <img src="images/RareRythm logo/logo-transparent-png.png" alt="Logo RareRythm" style="width: 175px;">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="genres.php">Genres</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="musique.php">Musiques</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="events.php">Évènements</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="partager_musique.php">Partager ma musique</a>
-                </li>
-                <li class="nav-item">
-                    <?php if (isset($_SESSION['username'])): ?>
-                        <a class="btn btn-primary" href="user_dashboard.php" role="button">
-                            <?= htmlspecialchars($_SESSION['username']); ?> (Tableau de bord)
-                        </a>
-                        <a class="btn btn-secondary" href="logout.php" role="button">Déconnexion</a>
-                    <?php else: ?>
-                        <a class="btn btn-primary" href="login.php" role="button">Connexion</a>
-                    <?php endif; ?>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <main>
-    <div class="container mt-4">
-        <h1><?= htmlspecialchars($event['titre']); ?></h1>
-        <img src="images/<?= htmlspecialchars($event['image']) ?>" alt="<?= htmlspecialchars($event['titre']); ?>" class="img-fluid">
-        <p>Date de l'événement : <?= date('d/m/Y', strtotime($event['date'])); ?></p>
-        <p>Lieu : <?= htmlspecialchars($event['lieu']); ?></p>
-        <p>Description : <?= nl2br(htmlspecialchars($event['description'])); ?></p>
-        <!-- Ajouter plus de détails si nécessaire -->
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="genres.php">Genres</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="musique.php">Musiques</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="events.php">Évènements</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="partager_musique.php">Partager ma musique</a>
+            </li>
+            <li class="nav-item">
+                <?php if (isset($_SESSION['username'])): ?>
+                    <a class="btn btn-primary" href="user_dashboard.php" role="button"><?= htmlspecialchars($_SESSION['username']); ?></a>
+                    <a class="btn btn-secondary" href="logout.php" role="button">Déconnexion</a>
+                <?php else: ?>
+                    <a class="btn btn-primary" href="login.php" role="button">Connexion</a>
+                <?php endif; ?>
+            </li>
+        </ul>
     </div>
-    </main>
+</nav>
 
-    <footer class="bg-light text-center text-lg-start">
+<main class="container mt-4">
+    <h1><?= htmlspecialchars($event['titre']); ?></h1>
+    <img src="images/<?= htmlspecialchars($event['image']) ?>" alt="<?= htmlspecialchars($event['titre']); ?>" class="img-fluid">
+    <p>Date de l'événement : <?= date('d/m/Y', strtotime($event['date'])); ?></p>
+    <p>Lieu : <?= htmlspecialchars($event['lieu']); ?></p>
+    <p>Description : <?= nl2br(htmlspecialchars($event['description'])); ?></p>
+</main>
+
+<footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">

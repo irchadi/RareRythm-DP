@@ -5,8 +5,7 @@ require_once '../includes/config.php'; // Assurez-vous que le chemin est correct
 // Initialiser les résultats de recherche
 $searchResults = [];
 
-// GESTION CONTACT ET CONFIDENTIALITE  //
-// Récupérer les paramètres
+// Récupérer les paramètres de configuration du site
 $stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
 $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
@@ -16,11 +15,11 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 
     // Préparer une requête SQL pour rechercher des morceaux, des genres et des événements
     $searchQuery = $pdo->prepare("
-        (SELECT titre AS name, 'Morceau' AS type FROM morceaux_de_musique WHERE titre LIKE :search)
+        (SELECT id, titre AS name, 'Morceau' AS type FROM morceaux_de_musique WHERE titre LIKE :search)
         UNION
-        (SELECT nom AS name, 'Genre' AS type FROM genres_musicaux WHERE nom LIKE :search)
+        (SELECT id, nom AS name, 'Genre' AS type FROM genres_musicaux WHERE nom LIKE :search)
         UNION
-        (SELECT titre AS name, 'Evenement' AS type FROM evenements WHERE titre LIKE :search)
+        (SELECT id, titre AS name, 'Evenement' AS type FROM evenements WHERE titre LIKE :search)
     ");
 
     $searchTermLike = '%' . $searchTerm . '%';
@@ -47,7 +46,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="index.php">
-    <img src="images/RareRythm logo/logo-transparent-png.png" alt="Logo RareRythm" style="width: 175px;">
+        <img src="images/RareRythm logo/logo-transparent-png.png" alt="Logo RareRythm" style="width: 175px;">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -84,19 +83,29 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     </div>
 </nav>
 
-    <div class="container mt-4">
-        <h1>Résultats de recherche</h1>
-        <p>Recherche pour : <?= htmlspecialchars($searchTerm) ?></p>
-        <?php if (empty($searchResults)): ?>
-            <p>Aucun résultat trouvé pour <?= htmlspecialchars($searchTerm) ?>.</p>
-        <?php else: ?>
-            <ul>
-                <?php foreach ($searchResults as $result): ?>
-                    <li><?= htmlspecialchars($result['name']) ?> (<?= htmlspecialchars($result['type']) ?>)</li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-    </div>
+<div class="container mt-4">
+    <h1>Résultats de recherche</h1>
+    <p>Recherche pour : <?= htmlspecialchars($searchTerm) ?></p>
+    <?php if (empty($searchResults)): ?>
+        <p>Aucun résultat trouvé pour <?= htmlspecialchars($searchTerm) ?>.</p>
+    <?php else: ?>
+        <ul>
+        <?php foreach ($searchResults as $result): ?>
+        <?php
+        // Déterminer le lien en fonction du type de résultat
+        $link = 'musique.php';  // lien par défaut
+        $params = 'search=' . urlencode($result['name']) . '&type=' . urlencode($result['type']);
+
+        if ($result['type'] === 'Evenement') {
+            $link = 'event_detail.php';
+            $params = 'id=' . urlencode($result['id']);
+        }
+        ?>
+        <li><a href="<?= $link ?>?<?= $params ?>"><?= htmlspecialchars($result['name']) ?> (<?= htmlspecialchars($result['type']) ?>)</a></li>
+        <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+</div>
 
     <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
@@ -115,7 +124,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         © 2024 RareRythm - Tous droits réservés
     </div>
 </footer>
-    
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

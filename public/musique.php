@@ -13,16 +13,49 @@ $query = "SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom
 // Ajouter une condition si un genre a été sélectionné
 if ($genreId !== null) {
     $query .= " WHERE morceaux_de_musique.genre_id = :genreId";
-    $stmt = $pdo->prepare($query);
+}
+
+$stmt = $pdo->prepare($query);
+
+if ($genreId !== null) {
     $stmt->bindParam(':genreId', $genreId, PDO::PARAM_INT);
-} else {
-    $stmt = $pdo->prepare($query);
 }
 
 $stmt->execute();
 $morceaux = $stmt->fetchAll();
 
+$searchTerm = $_GET['search'] ?? '';
+$type = $_GET['type'] ?? '';
+
+// Construire la requête en fonction du type et du terme de recherche
+$query = "SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom FROM morceaux_de_musique JOIN genres_musicaux ON morceaux_de_musique.genre_id = genres_musicaux.id";
+$whereConditions = [];
+
+if (!empty($searchTerm)) {
+    if ($type === 'Morceau') {
+        $whereConditions[] = "morceaux_de_musique.titre LIKE :searchTerm";
+    } elseif ($type === 'Genre') {
+        $whereConditions[] = "genres_musicaux.nom LIKE :searchTerm";
+    } elseif ($type === 'Evenement') {
+        // Supposons que vous avez des titres d'événements stockés de manière à pouvoir les lier aux pistes
+        $whereConditions[] = "exists (select 1 from evenements where titre like :searchTerm and morceaux_de_musique.id = evenements.morceau_id)";
+    }
+}
+
+if (!empty($whereConditions)) {
+    $query .= " WHERE " . implode(" OR ", $whereConditions);
+}
+
+$stmt = $pdo->prepare($query);
+if (!empty($searchTerm)) {
+    $searchTermLike = '%' . $searchTerm . '%';
+    $stmt->bindParam(':searchTerm', $searchTermLike, PDO::PARAM_STR);
+}
+$stmt->execute();
+$morceaux = $stmt->fetchAll();
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
