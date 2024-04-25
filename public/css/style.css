@@ -21,3 +21,18 @@
     background-color: #e0a800; 
     border-color: #daa520; 
 }
+
+.genre-badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+    background-color: #f0f0f0; /* Choisir la couleur de fond */
+    color: #333; /* Choisir la couleur du texte */
+    margin-right: .5em;
+}
