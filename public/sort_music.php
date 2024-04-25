@@ -1,31 +1,31 @@
 <?php
-require_once '../includes/config.php'; // Connexion à la base de données
+session_start();
+require_once '../includes/config.php'; // Assurez-vous que le chemin est correct.
 
-// Récupérer le critère de tri depuis l'URL
-$sort = $_GET['sort'] ?? 'date_asc';
+// Récupérer le critère de tri depuis la requête
+$sort_order = isset($_GET['sort']) ? $_GET['sort'] : 'date_asc';
 
-// Déterminer l'ordre SQL basé sur le critère de tri
-switch ($sort) {
-    case 'date_asc':
-        $orderBy = 'date_upload ASC';
-        break;
+$query = "SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom FROM morceaux_de_musique JOIN genres_musicaux ON morceaux_de_musique.genre_id = genres_musicaux.id";
+
+// Ajouter la logique de tri
+switch ($sort_order) {
     case 'date_desc':
-        $orderBy = 'date_upload DESC';
+        $query .= " ORDER BY morceaux_de_musique.date_upload DESC";
         break;
     case 'genre_asc':
-        $orderBy = 'genre_id ASC'; // Assurez-vous que cette colonne existe et est correcte
+        $query .= " ORDER BY genres_musicaux.nom ASC";
         break;
     case 'genre_desc':
-        $orderBy = 'genre_id DESC';
+        $query .= " ORDER BY genres_musicaux.nom DESC";
         break;
     default:
-        $orderBy = 'date_upload ASC';
+        $query .= " ORDER BY morceaux_de_musique.date_upload ASC";
+        break;
 }
 
-// Construire et exécuter la requête de tri
-$query = "SELECT * FROM morceaux_de_musique ORDER BY {$orderBy}";
-$result = $pdo->query($query);
-$morceaux = $result->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $pdo->query($query);
+$morceaux = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Convertir les résultats en JSON
+// Envoyer la réponse JSON
 echo json_encode($morceaux);
+

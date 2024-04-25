@@ -85,28 +85,28 @@ $morceaux = $stmt->fetchAll();
         <option value="genre_asc">Genre (A-Z)</option>
         <option value="genre_desc">Genre (Z-A)</option>
     </select>
+    <button id="reset-sort" class="btn btn-outline-secondary mb-3">Réinitialiser le tri</button>
    
     
     <!-- Conteneur pour la liste de musiques -->
     <div id="music-list" class="container">
     <?php foreach ($morceaux as $morceau): ?>
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title"><?= htmlspecialchars($morceau['titre']) ?></h5>
-                <!-- Afficher la pastille avec le genre -->
-                <p class="card-text"><?= htmlspecialchars($morceau['description']) ?></p>
-                <audio controls>
-                    <source src="musique/<?= htmlspecialchars($morceau['fichier_audio']) ?>" type="audio/mpeg">
-                    Votre navigateur ne supporte pas l'élément audio.
-                </audio>
-                <span class="badge bg-secondary genre-badge" data-genre="<?= htmlspecialchars($morceau['genre_nom']) ?>"><?= htmlspecialchars($morceau['genre_nom']) ?>
-</span>
-
-            </div>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title"><?= htmlspecialchars($morceau['titre']) ?></h5>
+            <p class="card-text"><?= htmlspecialchars($morceau['description']) ?></p>
+            <audio controls>
+                <source src="musique/<?= htmlspecialchars($morceau['fichier_audio']) ?>" type="audio/mpeg">
+                Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+            <span class="badge bg-secondary genre-badge"><?= htmlspecialchars($morceau['genre_nom']) ?></span>
         </div>
-    <?php endforeach; ?>
+    </div>
+<?php endforeach; ?>
+
+    </div>
 </div>
-</div>
+
 <script src="js/script.js"></script>
 
     
