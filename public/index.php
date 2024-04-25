@@ -117,12 +117,6 @@ try {
                     <img src="<?= htmlspecialchars($genre['image']) ?>" alt="<?= htmlspecialchars($genre['nom']) ?>" class="bd-placeholder-img card-img-top" width="100%" height="225">
                     <div class="card-body">
                         <p class="card-text"><?= htmlspecialchars($genre['nom']) ?></p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Voir</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary">Écouter</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
