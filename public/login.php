@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Genres</a>
+                    <a class="nav-link" href="genres.php">Genres</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Favoris</a>
@@ -95,7 +95,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </form>
 </body>
 </html>
-
-
-
-

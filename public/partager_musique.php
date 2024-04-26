@@ -118,8 +118,10 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
     <main>
     <div class="container">
-        <h1>Partager votre musique</h1>
-        <p><?= htmlspecialchars($message) ?></p>
+        <h1 class="mb-4">Partager votre musique</h1>
+        <div class="alert alert-info" role="alert">
+            <?= htmlspecialchars($message) ?>
+        </div>
         <form action="" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="titre" class="form-label">Titre</label>
@@ -131,7 +133,7 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
             </div>
             <div class="mb-3">
                 <label for="genre" class="form-label">Genre</label>
-                <select class="form-control" id="genre" name="genre" required>
+                <select class="form-select" id="genre" name="genre" required>
                     <?php foreach ($genres as $genre): ?>
                         <option value="<?= $genre['id'] ?>"><?= htmlspecialchars($genre['nom']) ?></option>
                     <?php endforeach; ?>
@@ -148,9 +150,10 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
             <button type="submit" class="btn btn-primary">Partager</button>
         </form>
     </div>
-    </main>
+</main>
 
-    <footer class="bg-light text-center text-lg-start fixed-bottom">
+
+    <footer class="bg-light text-center text-lg-start ">
     <div class="container p-4">
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">

@@ -123,16 +123,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Genres</a>
+                <a class="nav-link" href="genres.php">Genres</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="musique.php">Musiques</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Évènements</a>
+                <a class="nav-link" href="events.php">Évènements</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Partager ma musique</a>
+                <a class="nav-link" href="partager_musique.php">Partager ma musique</a>
             </li>
             <li class="nav-item">
                 <?php if (isset($_SESSION['username'])): ?>
@@ -152,12 +152,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </nav>
     </header>
-    
     <main class="container mt-4">
-        <h1>Tableau de bord administrateur</h1>
-        <div class="row text-center">
+        <h1 class="mb-4">Tableau de bord administrateur</h1>
+        <div class="row">
+            <!-- Statistiques -->
             <div class="col-md-4">
-                <div class="card bg-light mb-3">
+                <div class="card bg-light mb-4">
                     <div class="card-header">Utilisateurs</div>
                     <div class="card-body">
                         <h5 class="card-title"><?= $totalUsers ?></h5>
@@ -166,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card bg-light mb-3">
+                <div class="card bg-light mb-4">
                     <div class="card-header">Morceaux</div>
                     <div class="card-body">
                         <h5 class="card-title"><?= $totalMorceaux ?></h5>
@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card bg-light mb-3">
+                <div class="card bg-light mb-4">
                     <div class="card-header">Événements</div>
                     <div class="card-body">
                         <h5 class="card-title"><?= $totalEvenements ?></h5>
@@ -184,52 +184,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
         </div>
-        <h2>Gestion des utilisateurs</h2>
-        <form action="" method="get">
-            <input type="text" name="search" placeholder="Rechercher un utilisateur" value="<?= htmlspecialchars($search) ?>">
-            <button type="submit">Rechercher</button>
+
+        <!-- Gestion des utilisateurs -->
+        <h2 class="mb-4">Gestion des utilisateurs</h2>
+        <form action="" method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Rechercher un utilisateur" value="<?= htmlspecialchars($search) ?>">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit">Rechercher</button>
+                </div>
+            </div>
         </form>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom d'utilisateur</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($users as $user): ?>
-                <tr>
-                    <td><?= htmlspecialchars($user['id']) ?></td>
-                    <td><?= htmlspecialchars($user['username']) ?></td>
-                    <td><?= htmlspecialchars($user['email']) ?></td>
-                    <td><?= $user['active'] ? 'Actif' : 'Inactif' ?></td>
-                    <td>
-                        <form action="" method="post">
-                            <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
-                            <input type="hidden" name="new_status" value="<?= $user['active'] ? 0 : 1 ?>">
-                            <button type="submit" name="toggle_status" class="btn btn-<?= $user['active'] ? 'warning' : 'success' ?>">
-                                <?= $user['active'] ? 'Désactiver' : 'Activer' ?>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <h2>Gestion des morceaux de musique</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Titre</th>
-                    <th>Artiste</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($morceaux as $morceau): ?>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $user): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($user['id']) ?></td>
+                        <td><?= htmlspecialchars($user['username']) ?></td>
+                        <td><?= htmlspecialchars($user['email']) ?></td>
+                        <td><?= $user['active'] ? 'Actif' : 'Inactif' ?></td>
+                        <td>
+                            <form action="" method="post">
+                                <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+                                <input type="hidden" name="new_status" value="<?= $user['active'] ? 0 : 1 ?>">
+                                <button type="submit" name="toggle_status" class="btn <?= $user['active'] ? 'btn-warning' : 'btn-success' ?>">
+                                    <?= $user['active'] ? 'Désactiver' : 'Activer' ?>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Gestion des morceaux de musique -->
+        <h2 class="mb-4">Gestion des morceaux de musique</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Artiste</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($morceaux as $morceau): ?>
                     <tr>
                         <td><?= htmlspecialchars($morceau['titre']) ?></td>
                         <td><?= htmlspecialchars($morceau['artiste']) ?></td>
@@ -243,121 +254,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endforeach; ?>
                 </tbody>
             </table>
-            <section>
-                <h2>Gestion des événements</h2>
-                <form method="post">
-                    <input type="hidden" name="event_id" value="">
-                    <input type="text" name="titre" placeholder="Titre de l'événement" required>
-                    <input type="text" name="lieu" placeholder="Lieu">
-                    <input type="date" name="date" required>
-                    <textarea name="description" placeholder="Description"></textarea>
-                    <button type="submit" name="save_event">Enregistrer</button>
-                </form>
-
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Titre</th>
-                            <th>Lieu</th>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($evenements as $event): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($event['titre']) ?></td>
-                                <td><?= htmlspecialchars($event['lieu']) ?></td>
-                                <td><?= htmlspecialchars($event['date']) ?></td>
-                                <td><?= htmlspecialchars($event['description']) ?></td>
-                                <td>
-                                    <form method="post">
-                                        <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
-                                        <button type="submit" name="delete_event" class="btn btn-danger">Supprimer</button>
-                                    </form>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </section>
-                <section>
-    <h2>Rapports d'utilisateurs</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Description</th>
-                <th>Statut</th>
-                <th>Signalé par</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($reports as $report): ?>
-            <tr>
-                <td><?= $report['id'] ?></td>
-                <td><?= htmlspecialchars($report['description']) ?></td>
-                <td><?= $report['status'] ?></td>
-                <td><?= htmlspecialchars($report['username']) ?></td>
-                <td><?= $report['created_at'] ?></td>
-                <td>
-                    <button class="btn btn-success">Fermer</button>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</section>
-
-<section>
-    <h2>Commentaires signalés</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Contenu</th>
-                <th>Signalé par</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($reportedComments as $comment): ?>
-            <tr>
-                <td><?= $comment['id'] ?></td>
-                <td><?= htmlspecialchars($comment['content']) ?></td>
-                <td><?= htmlspecialchars($comment['username']) ?></td>
-                <td><?= $comment['created_at'] ?></td>
-                <td>
-                    <button class="btn btn-warning">Réviser</button>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</section>
-<section>
-    <h2>Paramètres du site</h2>
-    <form method="post">
-        <div>
-            <label for="contact_email">Email de contact :</label>
-            <input type="email" name="contact_email" id="contact_email" value="<?= htmlspecialchars($settings['contact_email'] ?? '') ?>">
         </div>
-        <div>
-            <label for="privacy_policy">Politique de confidentialité :</label>
-            <textarea name="privacy_policy" id="privacy_policy"><?= htmlspecialchars($settings['privacy_policy'] ?? '') ?></textarea>
+
+        <!-- Gestion des événements -->
+        <h2 class="mb-4">Gestion des événements</h2>
+        <form method="post" class="mb-4">
+            <input type="hidden" name="event_id" value="">
+            <div class="form-group">
+                <input type="text" name="titre" class="form-control" placeholder="Titre de l'événement" required>
+            </div>
+            <div class="form-group">
+                <input type="text" name="lieu" class="form-control" placeholder="Lieu">
+            </div>
+            <div class="form-group">
+                <input type="date" name="date" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <textarea name="description" class="form-control" placeholder="Description"></textarea>
+            </div>
+            <button type="submit" name="save_event" class="btn btn-primary">Enregistrer</button>
+        </form>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Lieu</th>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($evenements as $event): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($event['titre']) ?></td>
+                        <td><?= htmlspecialchars($event['lieu']) ?></td>
+                        <td><?= htmlspecialchars($event['date']) ?></td>
+                        <td><?= htmlspecialchars($event['description']) ?></td>
+                        <td>
+                            <form method="post">
+                                <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
+                                <button type="submit" name="delete_event" class="btn btn-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
         </div>
-        <button type="submit">Sauvegarder les modifications</button>
-    </form>
-</section>
 
+        <!-- Rapports d'utilisateurs -->
+        <h2 class="mb-4">Rapports d'utilisateurs</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Description</th>
+                        <th>Statut</th>
+                        <th>Signalé par</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reports as $report): ?>
+                    <tr>
+                        <td><?= $report['id'] ?></td>
+                        <td><?= htmlspecialchars($report['description']) ?></td>
+                        <td><?= $report['status'] ?></td>
+                        <td><?= htmlspecialchars($report['username']) ?></td>
+                        <td><?= $report['created_at'] ?></td>
+                        <td>
+                            <button class="btn btn-success">Fermer</button>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
+        <!-- Commentaires signalés -->
+        <h2 class="mb-4">Commentaires signalés</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Contenu</th>
+                        <th>Signalé par</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reportedComments as $comment): ?>
+                    <tr>
+                        <td><?= $comment['id'] ?></td>
+                        <td><?= htmlspecialchars($comment['content']) ?></td>
+                        <td><?= htmlspecialchars($comment['username']) ?></td>
+                        <td><?= $comment['created_at'] ?></td>
+                        <td>
+                            <button class="btn btn-warning">Réviser</button>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paramètres du site -->
+        <h2 class="mb-4">Paramètres du site</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="contact_email">Email de contact :</label>
+                <input type="email" name="contact_email" id="contact_email" class="form-control" value="<?= htmlspecialchars($settings['contact_email'] ?? '') ?>">
+            </div>
+            <div class="form-group">
+                <label for="privacy_policy">Politique de confidentialité :</label>
+                <textarea name="privacy_policy" id="privacy_policy" class="form-control"><?= htmlspecialchars($settings['privacy_policy'] ?? '') ?></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Sauvegarder les modifications</button>
+        </form>
     </main>
 
-    <footer class="bg-light text-center text-lg-start fixed-bottom">
+    <footer class="bg-light text-center text-lg-start">
     <div class="container p-4">
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">

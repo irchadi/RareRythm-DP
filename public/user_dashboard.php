@@ -109,27 +109,54 @@ if ($user) {
     </div>
 </nav>
 <div class="container">
-    <h1>Tableau de Bord</h1>
-    <p>Bienvenue, <?= htmlspecialchars($_SESSION['username']); ?>!</p>
-    <div class="container">
-
-    <section>
-        <h2>Informations Personnelles</h2>
-        <p>Email: <?= htmlspecialchars($userInfo['email']) ?></p>
-    </section>
-
-    <section>
-    <h2>Historique d'écoute</h2>
-    <ul>
-        <?php foreach ($history as $track): ?>
-            <li><?= htmlspecialchars($track['track_name']) ?> écouté le <?= date("d/m/Y", strtotime($track['listened_on'])) ?></li>
-        <?php endforeach; ?>
-    </ul>
-</section>
-
+    <h1 class="mt-4 mb-3">Tableau de Bord</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Photo de Profil</h5>
+                    <?php if(isset($_SESSION['profile_pic'])): ?>
+                        <img src="<?= htmlspecialchars($_SESSION['profile_pic']); ?>" class="img-fluid rounded-circle mb-3" alt="Photo de profil">
+                    <?php else: ?>
+                        <!-- Utilisation de l'image par défaut -->
+                        <img src="images/woman-7531315_1280.png" class="img-fluid rounded-circle mb-3" alt="Photo de profil par défaut">
+                    <?php endif; ?>
+                    <!-- Formulaire pour changer la photo de profil -->
+                    <form action="upload_profile_pic.php" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="file" name="profile_pic" class="form-control" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Changer la photo de profil</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Informations Personnelles</h5>
+                    <p class="card-text">Email: <?= htmlspecialchars($userInfo['email']) ?></p>
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Historique d'écoute</h5>
+                    <?php if (!empty($history)): ?>
+                        <ul class="list-group">
+                            <?php foreach ($history as $track): ?>
+                                <li class="list-group-item"><?= htmlspecialchars($track['track_name']) ?> écouté le <?= date("d/m/Y", strtotime($track['listened_on'])) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="card-text">Aucun historique d'écoute disponible.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-</div>
+
 <footer class="bg-light text-center text-lg-start fixed-bottom">
     <div class="container p-4">
         <div class="row">

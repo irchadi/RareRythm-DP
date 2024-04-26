@@ -1,7 +1,6 @@
 <?php
 session_start();
-require_once '../includes/config.php'; // Assurez-vous que le chemin est correct.
-
+require_once '../includes/config.php'; 
 // Initialiser les résultats de recherche
 $searchResults = [];
 
