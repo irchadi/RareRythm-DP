@@ -18,10 +18,9 @@ try {
     die("Erreur lors de la récupération des statistiques : " . $e->getMessage());
 }
 
-
 //  GESTION USERS //
 // Gestion de l'activation/désactivation des utilisateurs
-if (isset($_POST['toggle_status'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_status'])) {
     $userId = $_POST['user_id'];
     $newStatus = $_POST['new_status'];
     $stmt = $pdo->prepare("UPDATE users SET active = ? WHERE id = ?");
@@ -31,14 +30,14 @@ if (isset($_POST['toggle_status'])) {
 }
 
 // Recherche et affichage des utilisateurs
-$search = $_GET['search'] ?? '';
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 $stmt = $pdo->prepare("SELECT id, username, email, active FROM users WHERE username LIKE ? OR email LIKE ?");
 $stmt->execute(["%$search%", "%$search%"]);
 $users = $stmt->fetchAll();
 
 //  GESTION CONTENU  //
 // Gestion des actions sur les morceaux
-if (isset($_POST['delete_morceau'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_morceau'])) {
     $morceauId = $_POST['morceau_id'];
     $stmt = $pdo->prepare("DELETE FROM Morceaux_de_musique WHERE id = ?");
     $stmt->execute([$morceauId]);
@@ -48,31 +47,48 @@ if (isset($_POST['delete_morceau'])) {
 $morceaux = $pdo->query("SELECT id, titre, artiste FROM Morceaux_de_musique")->fetchAll();
 
 // Ajout / Mise à jour des événements
-if (isset($_POST['save_event'])) {
-    $titre = $_POST['titre'];
-    $lieu = $_POST['lieu'];
-    $date = $_POST['date'];
-    $description = $_POST['description'];
-    if ($_POST['event_id']) {
-        // Mise à jour de l'événement
-        $stmt = $pdo->prepare("UPDATE Evenements SET titre = ?, lieu = ?, date = ?, description = ? WHERE id = ?");
-        $stmt->execute([$titre, $lieu, $date, $description, $_POST['event_id']]);
-    } else {
-        // Ajout d'un nouvel événement
-        $stmt = $pdo->prepare("INSERT INTO Evenements (titre, lieu, date, description) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$titre, $lieu, $date, $description]);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['save_event'])) {
+        $titre = $_POST['titre'];
+        $lieu = $_POST['lieu'];
+        $date = $_POST['date'];
+        $description = $_POST['description'];
+
+        // Vérifier si un fichier a été téléversé
+        if(isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $image = $_FILES['image']['name'];
+            $target_dir = "images/";
+            $target_file = $target_dir . basename($image);
+            
+            // Déplacer le fichier téléversé vers le dossier d'images
+            if(move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                // Fichier téléversé avec succès, procéder à l'insertion/mise à jour de l'événement
+                if ($_POST['event_id']) {
+                    // Mise à jour de l'événement
+                    $stmt = $pdo->prepare("UPDATE Evenements SET titre = ?, lieu = ?, date = ?, description = ?, image = ? WHERE id = ?");
+                    $stmt->execute([$titre, $lieu, $date, $description, $image, $_POST['event_id']]);
+                } else {
+                    // Ajout d'un nouvel événement
+                    $stmt = $pdo->prepare("INSERT INTO Evenements (titre, lieu, date, description, image) VALUES (?, ?, ?, ?, ?)");
+                    $stmt->execute([$titre, $lieu, $date, $description, $image]);
+                }
+            } else {
+                // Erreur lors du téléversement du fichier
+                echo "Une erreur s'est produite lors du téléversement de l'image.";
+            }
+        } else {
+            // Aucun fichier téléversé ou erreur lors du téléversement
+            echo "Veuillez sélectionner une image.";
+        }
+    } elseif (isset($_POST['delete_event'])) {
+        $eventId = $_POST['event_id'];
+        $stmt = $pdo->prepare("DELETE FROM Evenements WHERE id = ?");
+        $stmt->execute([$eventId]);
     }
 }
 
-// Suppression d'un événement
-if (isset($_POST['delete_event'])) {
-    $eventId = $_POST['event_id'];
-    $stmt = $pdo->prepare("DELETE FROM Evenements WHERE id = ?");
-    $stmt->execute([$eventId]);
-}
-
 // Récupération des événements existants
-$evenements = $pdo->query("SELECT id, titre, lieu, date, description FROM Evenements")->fetchAll();
+$evenements = $pdo->query("SELECT id, titre, lieu, date, description, image FROM Evenements")->fetchAll();
 
 // GESTION RAPPORT ET COMMENTAIRES //
 // Récupération des rapports
@@ -95,8 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: admin_dashboard.php");
     exit;
 }
-
-
 
 ?>
 
@@ -257,52 +271,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <!-- Gestion des événements -->
-        <h2 class="mb-4">Gestion des événements</h2>
-        <form method="post" class="mb-4">
-            <input type="hidden" name="event_id" value="">
-            <div class="form-group">
-                <input type="text" name="titre" class="form-control" placeholder="Titre de l'événement" required>
-            </div>
-            <div class="form-group">
-                <input type="text" name="lieu" class="form-control" placeholder="Lieu">
-            </div>
-            <div class="form-group">
-                <input type="date" name="date" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <textarea name="description" class="form-control" placeholder="Description"></textarea>
-            </div>
-            <button type="submit" name="save_event" class="btn btn-primary">Enregistrer</button>
-        </form>
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Titre</th>
-                        <th>Lieu</th>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($evenements as $event): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($event['titre']) ?></td>
-                        <td><?= htmlspecialchars($event['lieu']) ?></td>
-                        <td><?= htmlspecialchars($event['date']) ?></td>
-                        <td><?= htmlspecialchars($event['description']) ?></td>
-                        <td>
-                            <form method="post">
-                                <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
-                                <button type="submit" name="delete_event" class="btn btn-danger">Supprimer</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+<h2 class="mb-4">Gestion des événements</h2>
+<div class="container mt-4">
+    <h3>Ajouter un événement</h3>
+    <form method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="titre">Titre de l'événement</label>
+            <input type="text" class="form-control" id="titre" name="titre" required>
         </div>
+        <div class="form-group">
+            <label for="lieu">Lieu</label>
+            <input type="text" class="form-control" id="lieu" name="lieu">
+        </div>
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="image">Image de l'événement</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+        </div>
+        <button type="submit" class="btn btn-primary" name="save_event">Ajouter</button>
+    </form>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Lieu</th>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($evenements as $event): ?>
+            <tr>
+                <td><?= htmlspecialchars($event['titre']) ?></td>
+                <td><?= htmlspecialchars($event['lieu']) ?></td>
+                <td><?= htmlspecialchars($event['date']) ?></td>
+                <td><?= htmlspecialchars($event['description']) ?></td>
+                <td><img src="<?= htmlspecialchars($event['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($event['titre']) ?>" style="max-width: 100px;"></td>
+                <td>
+                    <form method="post">
+                        <input type="hidden" name="event_id" value="<?= $event['id'] ?>">
+                        <button type="submit" name="delete_event" class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
         <!-- Rapports d'utilisateurs -->
         <h2 class="mb-4">Rapports d'utilisateurs</h2>
