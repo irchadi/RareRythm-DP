@@ -83,3 +83,26 @@ document.getElementById('sort').addEventListener('change', function() {
   })
   .catch(error => console.error('Error:', error));
 });
+
+// Exemple de fonction pour mettre à jour la liste des morceaux après un tri
+function updateMusicList(sortedMorceaux) {
+  const musicListContainer = document.getElementById('music-list');
+  musicListContainer.innerHTML = ''; // Vider la liste existante
+
+  sortedMorceaux.forEach(morceau => {
+      const morceauElement = `
+          <div class="card mb-3">
+              <div class="card-body">
+                  <h5 class="card-title">${morceau.titre}</h5>
+                  <p class="card-text">${morceau.description}</p>
+                  <span class="badge badge-secondary">${morceau.genre_nom}</span>
+                  <audio controls>
+                      <source src="musique/${morceau.fichier_audio}" type="audio/mpeg">
+                      Votre navigateur ne supporte pas l'élément audio.
+                  </audio>
+              </div>
+          </div>
+      `;
+      musicListContainer.innerHTML += morceauElement; // Ajouter le morceau à la liste
+  });
+}

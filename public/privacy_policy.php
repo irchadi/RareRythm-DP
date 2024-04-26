@@ -2,10 +2,10 @@
 session_start();
 require_once '../includes/config.php';  // Assurez-vous que le chemin est correct.
 
-// Récupération de la politique de confidentialité
-$stmt = $pdo->prepare("SELECT setting_value FROM SiteSettings WHERE setting_key = 'privacy_policy'");
-$stmt->execute();
-$policy = $stmt->fetch(PDO::FETCH_ASSOC);
+// GESTION CONTACT ET CONFIDENTIALITE  //
+// Récupérer les paramètres
+$stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
+$settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
 ?>
 
@@ -62,8 +62,22 @@ $policy = $stmt->fetch(PDO::FETCH_ASSOC);
             <?= isset($policy['setting_value']) ? htmlspecialchars($policy['setting_value']) : "Politique de confidentialité non disponible."; ?>
         </section>
     </main>
-    <footer>
-        <!-- Footer commun, éventuellement avec des liens vers d'autres pages légales -->
-    </footer>
+    <footer class="bg-light text-center text-lg-start fixed-bottom">
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Contactez-nous</h5>
+                <p>Email : <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>"><?= htmlspecialchars($settings['contact_email']) ?></a></p>
+            </div>
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Politique de confidentialité</h5>
+                <a href="privacy_policy.php">Lire notre politique</a>
+            </div>
+        </div>
+    </div>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2024 RareRythm - Tous droits réservés
+    </div>
+</footer>
 </body>
 </html>

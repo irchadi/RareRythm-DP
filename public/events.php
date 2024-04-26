@@ -68,7 +68,7 @@ $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($events as $event): ?>
                 <div class="col-md-4 mb-3">
                     <div class="card">
-                        <img src="images/<?= htmlspecialchars($event['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($event['titre']) ?>">
+                    <img src="<?= htmlspecialchars($event['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($event['titre']) ?>">
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($event['titre']) ?></h5>
                             <p class="card-text"><?= htmlspecialchars($event['description']) ?></p>
@@ -81,7 +81,7 @@ $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <footer class="bg-light text-center text-lg-start">
+    <footer class="bg-light text-center text-lg-start fixed-bottom">
     <div class="container p-4">
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">

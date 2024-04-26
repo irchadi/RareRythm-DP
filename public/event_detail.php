@@ -72,13 +72,13 @@ if (!$event) {
 
 <main class="container mt-4">
     <h1><?= htmlspecialchars($event['titre']); ?></h1>
-    <img src="images/<?= htmlspecialchars($event['image']) ?>" alt="<?= htmlspecialchars($event['titre']); ?>" class="img-fluid">
+    <img src="<?= htmlspecialchars($event['image']) ?>" class="card-img-top" alt="<?= htmlspecialchars($event['titre']) ?>">
     <p>Date de l'événement : <?= date('d/m/Y', strtotime($event['date'])); ?></p>
     <p>Lieu : <?= htmlspecialchars($event['lieu']); ?></p>
     <p>Description : <?= nl2br(htmlspecialchars($event['description'])); ?></p>
 </main>
 
-<footer class="bg-light text-center text-lg-start">
+<footer class="bg-light text-center text-lg-start fixed-bottom">
     <div class="container p-4">
         <div class="row">
             <div class="col-lg-6 col-md-12 mb-4 mb-md-0">

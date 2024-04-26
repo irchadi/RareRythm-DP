@@ -1,11 +1,11 @@
 <?php
-
 session_start();
 require_once '../includes/config.php';
 
 // Récupérer le genre sélectionné s'il est passé en paramètre
 $genreId = isset($_GET['genre']) ? intval($_GET['genre']) : null;
 
+// Initialiser la requête de base pour récupérer les morceaux
 $query = "SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom 
           FROM morceaux_de_musique 
           JOIN genres_musicaux ON morceaux_de_musique.genre_id = genres_musicaux.id";
@@ -13,46 +13,16 @@ $query = "SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom
 // Ajouter une condition si un genre a été sélectionné
 if ($genreId !== null) {
     $query .= " WHERE morceaux_de_musique.genre_id = :genreId";
-}
-
-$stmt = $pdo->prepare($query);
-
-if ($genreId !== null) {
+    $stmt = $pdo->prepare($query);
     $stmt->bindParam(':genreId', $genreId, PDO::PARAM_INT);
+    $stmt->execute();
+    $morceaux = $stmt->fetchAll();
+} else {
+    // Si aucun genre n'est sélectionné, récupérer tous les morceaux
+    $stmt = $pdo->query($query);
+    $morceaux = $stmt->fetchAll();
 }
 
-$stmt->execute();
-$morceaux = $stmt->fetchAll();
-
-$searchTerm = $_GET['search'] ?? '';
-$type = $_GET['type'] ?? '';
-
-// Construire la requête en fonction du type et du terme de recherche
-$query = "SELECT morceaux_de_musique.*, genres_musicaux.nom AS genre_nom FROM morceaux_de_musique JOIN genres_musicaux ON morceaux_de_musique.genre_id = genres_musicaux.id";
-$whereConditions = [];
-
-if (!empty($searchTerm)) {
-    if ($type === 'Morceau') {
-        $whereConditions[] = "morceaux_de_musique.titre LIKE :searchTerm";
-    } elseif ($type === 'Genre') {
-        $whereConditions[] = "genres_musicaux.nom LIKE :searchTerm";
-    } elseif ($type === 'Evenement') {
-        // Supposons que vous avez des titres d'événements stockés de manière à pouvoir les lier aux pistes
-        $whereConditions[] = "exists (select 1 from evenements where titre like :searchTerm and morceaux_de_musique.id = evenements.morceau_id)";
-    }
-}
-
-if (!empty($whereConditions)) {
-    $query .= " WHERE " . implode(" OR ", $whereConditions);
-}
-
-$stmt = $pdo->prepare($query);
-if (!empty($searchTerm)) {
-    $searchTermLike = '%' . $searchTerm . '%';
-    $stmt->bindParam(':searchTerm', $searchTermLike, PDO::PARAM_STR);
-}
-$stmt->execute();
-$morceaux = $stmt->fetchAll();
 
 ?>
 
@@ -141,6 +111,12 @@ $morceaux = $stmt->fetchAll();
 </div>
 
 <script src="js/script.js"></script>
+    <script>
+        // Script pour réinitialiser le tri
+        document.getElementById('reset-sort').addEventListener('click', function() {
+            window.location.href = 'musique.php'; // Simple redirection pour réinitialiser
+        });
+    </script>
 
     
 </body>
