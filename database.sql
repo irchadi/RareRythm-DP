@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 26 avr. 2024 à 14:39
+-- Généré le : ven. 26 avr. 2024 à 19:01
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -68,7 +68,8 @@ CREATE TABLE `evenements` (
 
 INSERT INTO `evenements` (`id`, `titre`, `lieu`, `date`, `description`, `image`, `utilisateur_id`) VALUES
 (1, 'Festival Indie Rock', 'Parc des Expositions', '2024-07-15', 'Un festival mettant en vedette des artistes indépendants de rock', 'images\\indie rock.jpg', 1),
-(2, 'Soirée Electro Indie', 'Warehouse Club', '2024-08-20', 'Une soirée avec des DJs jouant de la musique électro indépendante', 'images\\jxLWCk4.gif', 2);
+(2, 'Soirée Electro Indie', 'Warehouse Club', '2024-08-20', 'Une soirée avec des DJs jouant de la musique électro indépendante', 'images\\jxLWCk4.gif', 2),
+(13, 'Listening Party', 'Paris 15', '2024-05-12', 'Nouveau concept pour écouter des projets indépendants avant leur sortie.', 'images/paris-france-public-dans-le-concert-de-musique-le-sunset-jazz-club-a-l-interieur-de-french-jazz-music-cave-a-l-ecoute-de-groupes-awxfe2 - Copie.jpg', NULL);
 
 -- --------------------------------------------------------
 
@@ -145,7 +146,8 @@ INSERT INTO `morceaux_de_musique` (`id`, `titre`, `artiste`, `genre_id`, `fichie
 (16, 'Jazzy Bop', 'Future_king_creator', 5, '662aad4098f41.mp3', 'Funny jazz Hard Bop', '2024-04-25 19:21:36', NULL),
 (17, 'Jazzy Jazz', 'FreeGroove', 5, '662aad9841f5d.mp3', 'Jazz bouncing Be-pop', '2024-04-25 19:23:04', NULL),
 (18, 'bebop era 300', 'Darockart', 5, '662aadeebcdf4.mp3', 'Be-pop', '2024-04-25 19:24:30', NULL),
-(19, 'Cheerful Electro Swing', 'OpenMusicList', 7, '662aae7cb891c.mp3', 'Elecrto dancing swing', '2024-04-25 19:26:52', NULL);
+(19, 'Cheerful Electro Swing', 'OpenMusicList', 7, '662aae7cb891c.mp3', 'Elecrto dancing swing', '2024-04-25 19:26:52', NULL),
+(20, 'Swing', 'Musics', 7, '662bb5af5018b.mp3', 'swing pour videos', '2024-04-26 14:09:51', NULL);
 
 -- --------------------------------------------------------
 
@@ -229,7 +231,7 @@ CREATE TABLE `sitesettings` (
 --
 
 INSERT INTO `sitesettings` (`id`, `setting_key`, `setting_value`) VALUES
-(1, 'contact_email', 'contact@example.com'),
+(1, 'contact_email', 'rarerythm@gmail.com'),
 (2, 'privacy_policy', 'Politique de Confidentialité\nCollecte des informations personnelles\nNous collectons les informations suivantes : nom, prénom, adresse postale, adresse électronique, numéro de téléphone, etc. Les informations personnelles sont collectées par le biais de formulaires et grâce à l\'interactivité établie entre vous et notre site Web.\n\nFormulaires et interactivité:\nVotre information personnelle est collectée par le biais de formulaire, à savoir :\n\nFormulaire d\'inscription au site\nFormulaire de commande\nNous utilisons les informations ainsi collectées pour les finalités suivantes :\n\nSuivi de la commande\nInformations / Offres promotionnelles\nStatistiques');
 
 -- --------------------------------------------------------
@@ -253,12 +255,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `active`, `profile_pic`, `favorite_genre`) VALUES
-(1, 'admin', 'irchadi3@hotmail.fr', '$2y$10$wcTSkLpWT238ha1e3wqVU.mAgNBazz3n5kI0za4N9oiL0nisFIWy.', 1, NULL, NULL),
-(2, 'aaa', 'aaaaa@gmail.com', '$2y$10$He0VL5k96vFyGPfJl7sEkeEoXh46/iyAeiifAT59TLi79M1qI6s9q', 1, NULL, NULL),
-(3, 'bb', 'bb@gmail.com', '$2y$10$F1laEZ6oJfmESLZNnRswj.ilkwhZxMZDKHF01AYGw7JqkqWNufm9q', 1, NULL, NULL),
-(4, 'cc', 'cc@gmail.com', '$2y$10$dXRjAxlw1ZcOL/.XluHZKO4Tp6eB9dOXkc4HrRTUPxT.QB9ZcMBEW', 1, NULL, NULL),
-(5, 'cc', 'cc@gmail.com', '$2y$10$BJU1vS3NfBZ241be1U5fVeGFAh6r8GJ34NsG0sfmAnNIyf4tys5qa', 1, NULL, NULL),
-(6, 'cc', 'cc@gmail.com', '$2y$10$HHpI9aHJ/1eTYzF76ap0XOuB.eVMO1NiRqI6Ud7rOF3Cm9YpUWfnq', 1, NULL, NULL);
+(1, 'admin', 'irchadi3@hotmail.fr', '$2y$10$QOrSe8fs0v1n4B4Y44gmiuMGsq5InEEFOnp2TAapAe5FlPin9Jfv.', 1, NULL, NULL),
+(2, 'aaa', 'aaaaa@gmail.com', '$2y$10$El3zjSrN2ZFNUi.Xd8JV/.SqWgvaaAbhvqAG7pm59lnXDgB8PLKfu', 1, NULL, NULL),
+(3, 'bb', 'bb@gmail.com', '$2y$10$WPXr9ii3QuuZq3yBVhiF.eRq9LYwlNzbDP1ZO3Vc/RzM5OSSVZXk6', 1, NULL, NULL),
+(4, 'cc', 'cc@gmail.com', '$2y$10$mUEij3y1MSsLcJhGWHbqeepowTPBvLi/XU3.C1sUFpsF8074pPdMa', 1, NULL, NULL),
+(5, 'cc', 'cc@gmail.com', '$2y$10$b3lNKCOPU2LC2kFLcYJfnOO9ilnlIEBdx2zW2Jd6VB2qzopNzNAy6', 1, NULL, NULL),
+(6, 'cc', 'cc@gmail.com', '$2y$10$0RmUEfilrZZYVKrdrpyFI.crtmMoBQkilhjHaJa9tfgcQzQo9IZz.', 1, NULL, NULL);
 
 --
 -- Index pour les tables déchargées
@@ -347,7 +349,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT pour la table `evenements`
 --
 ALTER TABLE `evenements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `genres_musicaux`
@@ -365,7 +367,7 @@ ALTER TABLE `listening_history`
 -- AUTO_INCREMENT pour la table `morceaux_de_musique`
 --
 ALTER TABLE `morceaux_de_musique`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT pour la table `playlists`
