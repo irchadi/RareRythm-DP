@@ -11,6 +11,10 @@ if(!isset($_SESSION["username"])){
     header("Location: login.php");
     exit(); 
 }
+// GESTION CONTACT ET CONFIDENTIALITE  //
+// Récupérer les paramètres
+$stmt = $pdo->query("SELECT setting_key, setting_value FROM SiteSettings");
+$settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
 // Récupération des données de l'utilisateur
 $stmt = $pdo->prepare("SELECT username, email FROM users WHERE username = ?");
@@ -115,48 +119,33 @@ if ($user) {
     </section>
 
     <section>
-    <h2>Vos Playlists</h2>
-    <?php foreach ($playlists as $playlist): ?>
-        <p><?= htmlspecialchars($playlist['titre']) ?>
-            <a href="edit_playlist.php?id=<?= $playlist['id'] ?>">Modifier</a>
-            <a href="delete_playlist.php?id=<?= $playlist['id'] ?>">Supprimer</a>
-        </p>
+    <h2>Historique d'écoute</h2>
+    <ul>
+        <?php foreach ($history as $track): ?>
+            <li><?= htmlspecialchars($track['track_name']) ?> écouté le <?= date("d/m/Y", strtotime($track['listened_on'])) ?></li>
         <?php endforeach; ?>
-    </section>
+    </ul>
+</section>
 
-    <section>
-        <form action="create_playlist.php" method="POST">
-            <h4>Créer une nouvelle playlist</h4>
-            <div>
-                <label for="title">Nom de la playlist:</label>
-                <input type="text" id="title" name="title" required>
+</div>
+
+</div>
+<footer class="bg-light text-center text-lg-start fixed-bottom">
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Contactez-nous</h5>
+                <p>Email : <a href="mailto:<?= htmlspecialchars($settings['contact_email']) ?>"><?= htmlspecialchars($settings['contact_email']) ?></a></p>
             </div>
-            <div>
-                <label for="description">Description (optionnel):</label>
-                <textarea id="description" name="description"></textarea>
+            <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                <h5 class="text-uppercase">Politique de confidentialité</h5>
+                <a href="privacy_policy.php">Lire notre politique</a>
             </div>
-            <button type="submit" name="createPlaylist">Créer Playlist</button>
-        </form>
-        <?php if (!empty($message)): ?>
-            <div class="alert <?= isset($error) ? 'alert-danger' : 'alert-success' ?>" role="alert">
-            <?= htmlspecialchars($message) ?>
         </div>
-        <?php endif; ?>
-    </section>
-
-    <section>
-        <h2>Historique d'écoute</h2>
-        <ul>
-            <?php foreach ($history as $track): ?>
-                <li><?= htmlspecialchars($track['track_name']) ?> écouté le <?= date("d/m/Y", strtotime($track['listened_on'])) ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </section>
-</div>
-
-</div>
-<footer class="bg-light text-center text-lg-start">
-    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">© 2024 RareRythm - Tous droits réservés</div>
+    </div>
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2024 RareRythm - Tous droits réservés
+    </div>
 </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
