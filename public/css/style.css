@@ -52,7 +52,7 @@ footer {
     vertical-align: baseline;
     border-radius: .25rem;
     background-color: #f0f0f0; /* Choisir la couleur de fond */
-    color: #333; /* Choisir la couleur du texte */
+    color: #2a1818; /* Choisir la couleur du texte */
     margin-right: .5em;
 }
 
@@ -109,4 +109,50 @@ textarea.form-control {
 .btn-primary:active {
     background-color: #0056b3;
     box-shadow: none;
+}
+
+/* Style login */
+.box {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+.box-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.box-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.box-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.box-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+.box-button:hover {
+    background-color: #0056b3;
+}
+.box-register {
+    text-align: center;
+}
+.errorMessage {
+    color: #ff0000;
+    text-align: center;
+    margin-top: 10px;
 }
