@@ -70,7 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     // Ajout d'un nouvel événement
                     $stmt = $pdo->prepare("INSERT INTO Evenements (titre, lieu, date, description, image) VALUES (?, ?, ?, ?, ?)");
-                    $stmt->execute([$titre, $lieu, $date, $description, $image]);
+                    // Ajouter le préfixe "images/" au nom du fichier d'image
+                    $image = "images/" . $image;
+                    $stmt->execute([$titre, $lieu, $date, $description, $image]);;
                 }
             } else {
                 // Erreur lors du téléversement du fichier
