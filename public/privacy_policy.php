@@ -59,7 +59,7 @@ $settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
     <main>
         <h1>Politique de Confidentialité</h1>
         <section>
-            <?= isset($policy['setting_value']) ? htmlspecialchars($policy['setting_value']) : "Politique de confidentialité non disponible."; ?>
+        <?= isset($policy['setting_value']) ? htmlspecialchars($policy['setting_value']) : "Politique de confidentialité non disponible."; ?>
         </section>
     </main>
     <footer class="bg-light text-center text-lg-start fixed-bottom">
