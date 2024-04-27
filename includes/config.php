@@ -2,7 +2,7 @@
 $host = 'localhost';
 $dbname = 'rare_rythm_db';
 $username = 'root';
-$password = ''; // Assurez-vous que ce sont les bons paramètres pour votre environnement local
+$password = ''; 
 
 $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8";
 $options = [
